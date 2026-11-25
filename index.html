@@ -3,52 +3,534 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>7XZ Launcher</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>7XZ Launcher — Beyond Minecraft</title>
+  <meta name="description" content="Discover 7XZ Launcher, an independent Minecraft Java Edition launcher built around Fabric.">
+
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
-      background: #090909;
-      color: #eee;
-      font-family: Arial, sans-serif;
+      background: #080808;
+      color: #f5f5f5;
+      font-family: Arial, Helvetica, sans-serif;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .background-glow {
+      position: absolute;
+      top: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 400px;
+      background: #777;
+      opacity: 0.08;
+      filter: blur(140px);
+      pointer-events: none;
+    }
+
+    nav {
+      height: 85px;
+      padding: 0 9%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #202020;
+      position: relative;
+      z-index: 2;
+    }
+
+    .nav-logo {
+      font-size: 27px;
+      font-weight: 900;
+      letter-spacing: 5px;
+      background: linear-gradient(120deg, #fff, #777);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 35px;
+      align-items: center;
+    }
+
+    .nav-links a {
+      font-size: 12px;
+      color: #999;
+      letter-spacing: 2px;
+      transition: color .2s;
+    }
+
+    .nav-links a:hover {
+      color: white;
+    }
+
+    .hero {
+      min-height: 690px;
+      padding: 130px 20px 100px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       text-align: center;
-      padding: 80px 20px;
+      position: relative;
     }
-    h1 {
-      font-size: 56px;
-      letter-spacing: 8px;
-    }
-    p {
+
+    .status {
+      border: 1px solid #383838;
+      border-radius: 30px;
+      padding: 9px 17px;
       color: #aaa;
-      line-height: 1.7;
+      font-size: 10px;
+      letter-spacing: 3px;
+      margin-bottom: 35px;
     }
-    .line {
-      width: 60px;
-      height: 3px;
-      background: #aaa;
-      margin: 25px auto;
+
+    .status span {
+      color: #ddd;
+      margin-right: 8px;
+    }
+
+    .hero h1 {
+      font-size: clamp(90px, 17vw, 175px);
+      font-weight: 900;
+      letter-spacing: 12px;
+      line-height: 1;
+      background: linear-gradient(
+        120deg,
+        #fff 15%,
+        #888 48%,
+        #eee 75%,
+        #555
+      );
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      filter: drop-shadow(0 10px 35px #ffffff12);
+    }
+
+    .hero h2 {
+      margin-top: 30px;
+      font-size: 17px;
+      letter-spacing: 8px;
+      color: #aaa;
+      font-weight: 400;
+    }
+
+    .hero p {
+      max-width: 540px;
+      margin-top: 25px;
+      color: #777;
+      line-height: 1.9;
+      font-size: 14px;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 15px;
+      margin-top: 40px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .button {
+      padding: 16px 30px;
+      border: 1px solid #555;
+      font-size: 11px;
+      letter-spacing: 2px;
+      transition: .25s;
+    }
+
+    .button.primary {
+      background: #eee;
+      color: #080808;
+      border-color: #eee;
+      font-weight: bold;
+    }
+
+    .button.primary:hover {
+      background: white;
+      transform: translateY(-3px);
+    }
+
+    .button.secondary {
+      color: #ccc;
+    }
+
+    .button.secondary:hover {
+      border-color: white;
+      color: white;
+    }
+
+    section {
+      padding: 100px 9%;
+    }
+
+    .section-label {
+      color: #777;
+      font-size: 10px;
+      letter-spacing: 4px;
+      text-align: center;
+    }
+
+    .section-title {
+      font-size: clamp(30px, 5vw, 48px);
+      text-align: center;
+      margin-top: 20px;
+      letter-spacing: 2px;
+    }
+
+    .section-description {
+      color: #777;
+      text-align: center;
+      max-width: 550px;
+      margin: 18px auto 55px;
+      line-height: 1.8;
+      font-size: 13px;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      max-width: 1150px;
+      margin: auto;
+    }
+
+    .feature {
+      background: linear-gradient(145deg, #151515, #0c0c0c);
+      border: 1px solid #252525;
+      padding: 35px 28px;
+      min-height: 205px;
+      transition: .25s;
+    }
+
+    .feature:hover {
+      border-color: #777;
+      transform: translateY(-5px);
+    }
+
+    .feature-number {
+      color: #666;
+      font-size: 11px;
+      letter-spacing: 3px;
+    }
+
+    .feature h3 {
+      margin-top: 30px;
+      font-size: 19px;
+      letter-spacing: 1px;
+    }
+
+    .feature p {
+      margin-top: 13px;
+      color: #777;
+      line-height: 1.8;
+      font-size: 12px;
+    }
+
+    .about {
+      background: #0d0d0d;
+      border-top: 1px solid #202020;
+      border-bottom: 1px solid #202020;
+      text-align: center;
+    }
+
+    .about-content {
+      max-width: 700px;
+      margin: auto;
+    }
+
+    .about-content p {
+      color: #888;
+      font-size: 14px;
+      line-height: 2;
+      margin-top: 25px;
+    }
+
+    .download {
+      text-align: center;
+    }
+
+    .download-box {
+      max-width: 700px;
+      margin: 45px auto 0;
+      border: 1px solid #292929;
+      background: linear-gradient(145deg, #151515, #090909);
+      padding: 50px 25px;
+    }
+
+    .download-box h3 {
+      font-size: 25px;
+      letter-spacing: 3px;
+    }
+
+    .download-box p {
+      color: #777;
+      font-size: 13px;
+      margin-top: 17px;
+      line-height: 1.8;
+    }
+
+    .download-status {
+      display: inline-block;
+      margin-top: 28px;
+      padding: 12px 20px;
+      border: 1px solid #444;
+      color: #aaa;
+      font-size: 10px;
+      letter-spacing: 2px;
+    }
+
+    footer {
+      padding: 35px 9%;
+      border-top: 1px solid #222;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    footer strong {
+      letter-spacing: 4px;
+      font-size: 18px;
+    }
+
+    footer p {
+      color: #666;
+      font-size: 10px;
+      line-height: 1.8;
+    }
+
+    @media (max-width: 750px) {
+      nav {
+        padding: 0 6%;
+      }
+
+      .nav-links {
+        gap: 13px;
+      }
+
+      .nav-links a {
+        font-size: 9px;
+        letter-spacing: 1px;
+      }
+
+      .features {
+        grid-template-columns: 1fr;
+      }
+
+      section {
+        padding: 75px 7%;
+      }
+
+      .hero {
+        min-height: 600px;
+      }
+
+      .hero h2 {
+        letter-spacing: 4px;
+      }
+
+      footer {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *, *::before, *::after {
+        transition-duration: 0.01ms !important;
+      }
     }
   </style>
 </head>
+
 <body>
-  <h1>7XZ</h1>
-  <div class="line"></div>
-  <h2>7XZ Launcher</h2>
-  <p>
-    An independent Minecraft Java Edition launcher
-    built around the Fabric mod loader.
-  </p>
-  <p>
-    Install and manage Minecraft, Fabric and the
-    7XZ Client from one application.
-  </p>
-  <p>
-    Authentication uses Microsoft's official
-    OAuth 2.0 authorization flow.
-  </p>
-  <p>
-    7XZ Launcher is an independent project and is
-    not affiliated with Mojang or Microsoft.
-  </p>
-  <p>© 2026 7XZ</p>
+
+  <div class="background-glow"></div>
+
+  <nav>
+    <a href="#" class="nav-logo">7XZ</a>
+
+    <div class="nav-links">
+      <a href="#features">FEATURES</a>
+      <a href="#about">ABOUT</a>
+      <a href="#download">DOWNLOAD</a>
+    </div>
+  </nav>
+
+  <main>
+    <div class="hero">
+      <div class="status">
+        <span>●</span> IN DEVELOPMENT
+      </div>
+
+      <h1>7XZ</h1>
+
+      <h2>BEYOND MINECRAFT</h2>
+
+      <p>
+        Experience Minecraft Java Edition with a new level
+        of customization. Meet 7XZ Launcher, built for
+        players who want more control over their experience.
+      </p>
+
+      <div class="hero-buttons">
+        <a href="#features" class="button primary">
+          DISCOVER 7XZ
+        </a>
+
+        <a href="#about" class="button secondary">
+          LEARN MORE
+        </a>
+      </div>
+    </div>
+
+    <section id="features">
+      <div class="section-label">WHAT WE OFFER</div>
+
+      <h2 class="section-title">BUILT FOR YOUR GAME</h2>
+
+      <p class="section-description">
+        A launcher and client experience designed around
+        customization, convenience and simplicity.
+      </p>
+
+      <div class="features">
+
+        <div class="feature">
+          <div class="feature-number">01 / CUSTOMIZATION</div>
+          <h3>Custom HUDs</h3>
+          <p>
+            Customize your in-game interface with
+            features designed for your experience.
+          </p>
+        </div>
+
+        <div class="feature">
+          <div class="feature-number">02 / EXPERIENCE</div>
+          <h3>Client Features</h3>
+          <p>
+            Explore menus, visual customization
+            and useful comfort features.
+          </p>
+        </div>
+
+        <div class="feature">
+          <div class="feature-number">03 / COSMETICS</div>
+          <h3>Cosmetics</h3>
+          <p>
+            Personalize your 7XZ experience
+            with client cosmetics.
+          </p>
+        </div>
+
+        <div class="feature">
+          <div class="feature-number">04 / PERFORMANCE</div>
+          <h3>Fabric Based</h3>
+          <p>
+            Built around the Fabric mod loader
+            for Minecraft Java Edition.
+          </p>
+        </div>
+
+        <div class="feature">
+          <div class="feature-number">05 / SIMPLICITY</div>
+          <h3>Easy Installation</h3>
+          <p>
+            Manage Minecraft, Fabric and the
+            7XZ Client through one launcher.
+          </p>
+        </div>
+
+        <div class="feature">
+          <div class="feature-number">06 / AUTHENTICATION</div>
+          <h3>Microsoft Login</h3>
+          <p>
+            Designed to use Microsoft's official
+            OAuth 2.0 authentication flow.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="about" class="about">
+      <div class="about-content">
+        <div class="section-label">THE PROJECT</div>
+
+        <h2 class="section-title">ABOUT 7XZ</h2>
+
+        <p>
+          7XZ Launcher is an independent Windows
+          application designed for Minecraft Java Edition.
+          It brings Minecraft installation, Fabric setup
+          and the 7XZ Client together in one place.
+        </p>
+
+        <p>
+          Our goal is to create a clean, modern and
+          convenient experience for the Minecraft community.
+        </p>
+      </div>
+    </section>
+
+    <section id="download" class="download">
+      <div class="section-label">GET STARTED</div>
+
+      <h2 class="section-title">JOIN THE 7XZ PROJECT</h2>
+
+      <p class="section-description">
+        7XZ Launcher is currently in development.
+        Stay tuned for future updates.
+      </p>
+
+      <div class="download-box">
+        <h3>7XZ LAUNCHER</h3>
+
+        <p>
+          Windows 11 · Minecraft Java Edition · Fabric
+        </p>
+
+        <div class="download-status">
+          RELEASE COMING SOON
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <strong>7XZ</strong>
+
+    <p>
+      © 2026 7XZ Launcher<br>
+      Independent project. Not affiliated with
+      Mojang or Microsoft.
+    </p>
+  </footer>
+
 </body>
 </html>
